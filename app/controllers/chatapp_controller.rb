@@ -1,13 +1,14 @@
 class ChatappController < ApplicationController
-  def index
-    render json: Chatapp.all
+
+  def read
+    render json: Chatapp.find_by(token: params[:token])
   end
 
   def create
     payload = {username: params[:username], password: params[:password]}
     _token = JWT.encode(payload, Rails.application.credentials.secret_key_base);
 
-    app
+    app = nil
     ActiveRecord::Base.transaction do
       if Chatapp.where(username: params[:username]).exists?
         app = nil
@@ -19,7 +20,7 @@ class ChatappController < ApplicationController
     if app == nil
       render json: {body: "application with the same username is exists"}, status: :unprocessable_entity
     elsif app.save
-      render json: Chatapp.all, status: :created
+      render json: app, status: :created
     else
       render json: app.errors, status: :unprocessable_entity
     end
@@ -27,8 +28,9 @@ class ChatappController < ApplicationController
   end
   
   private
+
   def chatapp_params
-    params.require(:Chatapp).permit(:username, :password, :name)
+    params.require(:Chatapp).permit(:username, :password, :name, :token)
   end
 
 end
