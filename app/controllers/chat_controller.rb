@@ -46,6 +46,29 @@ class ChatController < ApplicationController
     end
   end
 
+  def update
+    username = Chatapp.find_by(token: params[:token])[:username]
+
+    unless username.nil?
+      chat = nil
+      ActiveRecord::Base.transaction do
+        chat = Chat.find_by(username: username)
+        unless chat.nil?
+          chat.lock!
+          chat[:name] = params[:name] unless params[:name].nil?
+          chat.save!
+        end
+      end
+
+      if chat.nil?
+        render json: "Invalid keys of chat"
+      else
+        render json: chat
+      end
+    end
+    render json: "invalid token"
+  end
+
 
   private
 

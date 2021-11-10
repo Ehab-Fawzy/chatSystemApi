@@ -26,11 +26,26 @@ class ChatappController < ApplicationController
     end
 
   end
+
+  def update
+    app = nil
+    ActiveRecord::Base.transaction do
+      app = Chatapp.find_by(token: params[:token])
+      unless app.nil?
+        app.lock!
+        app[:name] = params[:name] unless params[:name].nil?
+        app[:password] = params[:password] unless params[:password].nil?
+
+        app.save!
+        # app = Chatapp.create(username: params[:username], password: params[:password], name: params[:name], token: _token, chat_count: 0)
+      end
+    end
+    render json: app
+  end
   
   private
 
   def chatapp_params
     params.require(:Chatapp).permit(:username, :password, :name, :token)
   end
-
 end
