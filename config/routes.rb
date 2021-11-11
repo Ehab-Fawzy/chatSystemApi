@@ -11,5 +11,7 @@ Rails.application.routes.draw do
   get '/message/read/all', to: 'message#readall'
   post '/message/create', to: 'message#create'
   patch '/message/update', to: 'message#update'
+
+  get '/message/search', to: 'message#search'
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end
