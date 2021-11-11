@@ -66,7 +66,6 @@ class ChatController < ApplicationController
         render json: chat
       end
     end
-    render json: "invalid token"
   end
 
 

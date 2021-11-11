@@ -10,36 +10,42 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_11_10_211017) do
+ActiveRecord::Schema.define(version: 2021_11_11_103250) do
 
   create_table "chatapps", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
-    t.string "token"
     t.string "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "username"
     t.string "password"
     t.integer "chat_count"
+    t.string "token"
+    t.index ["token"], name: "index_chatapps_on_token"
     t.index ["username"], name: "index_chatapps_on_username", unique: true
   end
 
   create_table "chats", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.string "username"
     t.string "name"
-    t.integer "number"
     t.integer "message_count"
+    t.string "username"
+    t.integer "number"
+    t.index ["number"], name: "index_chats_on_number"
+    t.index ["username"], name: "index_chats_on_username"
   end
 
   create_table "messages", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8mb3", force: :cascade do |t|
     t.string "body"
-    t.string "username"
-    t.integer "number"
     t.string "other"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "username"
+    t.integer "number"
     t.integer "chat_number"
+    t.index ["chat_number"], name: "index_messages_on_chat_number"
+    t.index ["number"], name: "index_messages_on_number"
+    t.index ["username"], name: "index_messages_on_username"
   end
 
 end
