@@ -1,7 +1,9 @@
 class ChatappController < ApplicationController
 
   def read
-    render json: Chatapp.find_by(token: params[:token])
+    app = Chatapp.where(token: params[:token])
+    app = app.select('name', 'username', 'chat_count', 'token', 'created_at', 'updated_at')
+    render json: app
   end
 
   def create
@@ -18,8 +20,9 @@ class ChatappController < ApplicationController
     end
 
     if app == nil
-      render json: {body: "application with the same username is exists"}, status: :unprocessable_entity
+      render json: {body: 'application with the same username is exists'}, status: :unprocessable_entity
     elsif app.save
+      app[:id] = -1
       render json: app, status: :created
     else
       render json: app.errors, status: :unprocessable_entity
@@ -37,9 +40,9 @@ class ChatappController < ApplicationController
         app[:password] = params[:password] unless params[:password].nil?
 
         app.save!
-        # app = Chatapp.create(username: params[:username], password: params[:password], name: params[:name], token: _token, chat_count: 0)
       end
     end
+    app[:id] = -1
     render json: app
   end
   

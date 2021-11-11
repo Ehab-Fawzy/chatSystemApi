@@ -4,10 +4,11 @@ class MessageController < ApplicationController
     if app.nil?
       render json: 'Invalid Token'
     else
-      messages = Message.find_by(username: app[:username], chat_number: params[:chat_number], number: params[:number])
+      messages = Message.where(username: app[:username], chat_number: params[:chat_number], number: params[:number])
       if messages.nil?
         render json: 'No chat founded'
       else
+        messages = messages.select("body", "other", "number", "chat_number", "created_at", "updated_at")
         render json: messages
       end
     end
@@ -22,6 +23,7 @@ class MessageController < ApplicationController
       if messages.nil?
         render json: 'No chat founded'
       else
+        messages = messages.select("body", "other", "number", "chat_number", "created_at", "updated_at")
         render json: messages
       end
     end
@@ -86,6 +88,8 @@ class MessageController < ApplicationController
       if message.nil?
         render json: 'Invalid keys of message'
       else
+        message[:id] = -1
+        # message = message.select("body", "other", "number", "chat_number", "created_at", "updated_at")
         render json: message
       end
     end
@@ -98,9 +102,11 @@ class MessageController < ApplicationController
     else
       messages = Message.all.where(username: app[:username], chat_number: params[:chat_number])
       messages = messages.where("body like '%#{params[:body]}%'")
+
       if messages.nil?
         render json: 'No chat founded'
       else
+        messages = messages.select("body", "other", "number", "chat_number", "created_at", "updated_at")
         render json: messages
       end
     end

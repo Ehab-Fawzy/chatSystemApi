@@ -8,6 +8,7 @@ class ChatController < ApplicationController
       if chats.nil?
         render json: "No chats founded"
       else
+        chats = chats.select("name", "message_count", "number", "created_at", "updated_at")
         render json: chats
       end
     end
@@ -63,6 +64,7 @@ class ChatController < ApplicationController
       if chat.nil?
         render json: "Invalid keys of chat"
       else
+        chat[:id] = -1
         render json: chat
       end
     end
